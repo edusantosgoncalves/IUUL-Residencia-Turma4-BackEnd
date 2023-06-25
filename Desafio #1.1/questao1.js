@@ -12,6 +12,7 @@ let x;
 let y;
 
 //Vértice 1
+console.log("---- VÉRTICES ----");
 x = prompt("Digite o x do vertice 1: ");
 while (isNaN(x)) {
   console.log("X não é número!");

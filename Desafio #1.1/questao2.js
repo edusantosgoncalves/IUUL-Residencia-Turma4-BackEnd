@@ -7,32 +7,16 @@ import PromptSync from "prompt-sync";
 //Instanciando-a na variável prompt
 const prompt = PromptSync({ sigint: true }); // Permite terminar o programa com CTRL-C
 
-//Obtendo dados do usuário para as vértices
+//Definindo regex da entrada dos vértices
 const vrfEntrada = /^(\d+),(\d+),(\d+),(\d+),(\d+),(\d+)$/;
 
-//Função que verifica se todos os x's e y's são números
-function vrfNumeros(entrada) {
-  const nvEntrada = entrada.split(",");
-
-  if (
-    isNaN(nvEntrada[0]) ||
-    isNaN(nvEntrada[1]) ||
-    isNaN(nvEntrada[2]) ||
-    isNaN(nvEntrada[3]) ||
-    isNaN(nvEntrada[4]) ||
-    isNaN(nvEntrada[5])
-  )
-    return false;
-
-  return true;
-}
-
 //Triangulo 1
+console.log("---- TRIÂNGULOS ----");
 let vertice = prompt(
   "Triângulo 1: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
 );
 
-while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
+while (!vrfEntrada.test(vertice)) {
   console.log("Vértices inseridos incorretamente!");
   vertice = prompt(
     "Triângulo 1: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
@@ -40,7 +24,6 @@ while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
 }
 
 let dadosVertice = vertice.split(",");
-
 let triangulo1 = null;
 
 try {
@@ -53,24 +36,15 @@ try {
     dadosVertice[5]
   );
 } catch (e) {
-  console.log(`Erro: ${e}`);
+  console.log(`${e}`);
 }
-/*
-let triangulo1 = new Triangulo(
-  dadosVertice[0],
-  dadosVertice[1],
-  dadosVertice[2],
-  dadosVertice[3],
-  dadosVertice[4],
-  dadosVertice[5]
-);
-*/
+
 //Triangulo 2
 vertice = prompt(
   "Triângulo 2: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
 );
 
-while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
+while (!vrfEntrada.test(vertice)) {
   console.log("Vértices inseridos incorretamente!");
   vertice = prompt(
     "Triângulo 2: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
@@ -78,22 +52,27 @@ while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
 }
 
 dadosVertice = vertice.split(",");
+triangulo2 = null;
 
-let triangulo2 = new Triangulo(
-  dadosVertice[0],
-  dadosVertice[1],
-  dadosVertice[2],
-  dadosVertice[3],
-  dadosVertice[4],
-  dadosVertice[5]
-);
+try {
+  triangulo2 = new Triangulo(
+    dadosVertice[0],
+    dadosVertice[1],
+    dadosVertice[2],
+    dadosVertice[3],
+    dadosVertice[4],
+    dadosVertice[5]
+  );
+} catch (e) {
+  console.log(`${e}`);
+}
 
 //Triangulo 3
 vertice = prompt(
   "Triângulo 3: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
 );
 
-while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
+while (!vrfEntrada.test(vertice)) {
   console.log("Vértices inseridos incorretamente!");
   vertice = prompt(
     "Triângulo 3: Insira os 3 vértices (x,y) no formato x1,y1,x2,y2,x3,y3: "
@@ -102,6 +81,7 @@ while (!vrfEntrada.test(vertice) || !vrfNumeros(vertice)) {
 
 dadosVertice = vertice.split(",");
 let triangulo3 = null;
+
 try {
   triangulo3 = new Triangulo(
     dadosVertice[0],
@@ -112,7 +92,7 @@ try {
     dadosVertice[5]
   );
 } catch (e) {
-  console.log(`Erro: ${e}`);
+  console.log(`${e}`);
 }
 
 //Chamando os métodos implementados na classe:
@@ -177,15 +157,3 @@ if (triangulo2 !== null) {
   console.log(` - Tipo: ${nvTriangulo.tipo()}`);
   console.log(` - Área: ${nvTriangulo.area}`);
 }
-/*
-console.log(`\nDistancia entre v1 e v2: ${v1.distancia(v2)}`);
-console.log(
-  `Verificando se v1 e v3 sao iguais: ${v3.equals(v1) ? "Sim" : "Não"}`
-);
-
-console.log(`Mudando x e y de v1 para os de v2...`);
-v1.move(v2.x, v2.y);
-
-console.log(
-  `Verificando se v1 e v2 sao iguais: ${v1.equals(v2) ? "Sim" : "Não"}`
-);*/

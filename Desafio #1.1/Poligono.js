@@ -7,8 +7,8 @@ export default class Poligono {
     if (vetorVertices.length < 3)
       throw new Error("É necessário que o poligono tenha ao menos 3 vértices!");
 
-    vertices = [];
-    for (const vertice in vetorVertices) {
+    let vertices = [];
+    for (const vertice of vetorVertices) {
       vertices.push(new Vertice(vertice.x, vertice.y));
     }
 
@@ -17,23 +17,26 @@ export default class Poligono {
 
   addVertice(verticeAdd) {
     //Verificando se o vértice adicionado existe no poligono vértices
-    for (const vertice in this._vertices) {
+    for (const vertice of this._vertices) {
       //Se já existir, retorne falso
       if (vertice.x === verticeAdd.x && vertice.y === verticeAdd.y)
         return false;
     }
 
-    //Se ele não existir, adicione-o e retorne falso
-    this._vertices = this._vertices.push(
-      new Vertice(verticeAdd.x, verticeAdd.y)
-    );
+    //Se ele não existir, adicione-o e retorne verdadeiro
+    this._vertices.push(new Vertice(verticeAdd.x, verticeAdd.y));
     return true;
   }
 
   get perimetro() {
     let perimetro = 0;
+    let vertices = this._vertices;
 
-    //A implementar
+    for (let i = 0; i < vertices.length; i++) {
+      const iniVertice = vertices[i];
+      const proxVertice = vertices[(i + 1) % vertices.length]; // Utilizando o % para garatir que o último vértice se ligue com o primeiro, fechando o polígno
+      perimetro += iniVertice.distancia(proxVertice);
+    }
 
     return perimetro;
   }
