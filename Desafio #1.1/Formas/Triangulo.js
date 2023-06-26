@@ -70,11 +70,14 @@ export default class Triangulo {
   }
 
   clone() {
-    const vertice1Clone = new Vertice(this._vertice1.x, this._vertice1.y);
-    const vertice2Clone = new Vertice(this._vertice2.x, this._vertice2.y);
-    const vertice3Clone = new Vertice(this._vertice3.x, this._vertice3.y);
-
-    return new Triangulo(vertice1Clone, vertice2Clone, vertice3Clone);
+    return new Triangulo(
+      this.vertice1.x,
+      this.vertice2.x,
+      this.vertice3.x,
+      this.vertice1.y,
+      this.vertice2.y,
+      this.vertice3.y
+    );
   }
 
   get area() {

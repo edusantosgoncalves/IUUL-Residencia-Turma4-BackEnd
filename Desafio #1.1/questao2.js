@@ -1,5 +1,5 @@
 //Importando classes
-import Triangulo from "./Triangulo.js";
+import Triangulo from "./Formas/Triangulo.js";
 
 //Importando biblioteca PromptSync
 import PromptSync from "prompt-sync";
@@ -52,7 +52,7 @@ while (!vrfEntrada.test(vertice)) {
 }
 
 dadosVertice = vertice.split(",");
-triangulo2 = null;
+let triangulo2 = null;
 
 try {
   triangulo2 = new Triangulo(
@@ -98,7 +98,7 @@ try {
 //Chamando os métodos implementados na classe:
 if (triangulo1 !== null) {
   console.log(
-    `\nTriângulo 1:\n - Vértice 1 - x: ${triangulo1.vertice1.x} / y: ${triangulo1.vertice1.y};`
+    `\nTriângulo 1:\n - Vértice 1 - x: ${triangulo1.vertice1.x} / y: ${triangulo1.vertice1.y}`
   );
   console.log(
     ` - Vértice 2 - x: ${triangulo1.vertice2.x} / y: ${triangulo1.vertice2.y}`
@@ -108,12 +108,12 @@ if (triangulo1 !== null) {
   );
   console.log(` - Perimetro: ${triangulo1.perimetro}`);
   console.log(` - Tipo: ${triangulo1.tipo()}`);
-  console.log(` - Área: ${triangulo1.area()}`);
+  console.log(` - Área: ${triangulo1.area}`);
 }
 
 if (triangulo2 !== null) {
   console.log(
-    `\nTriângulo 2:\n - Vértice 1 - x: ${triangulo2.vertice1.x} / y: ${triangulo2.vertice1.y};`
+    `\nTriângulo 2:\n - Vértice 1 - x: ${triangulo2.vertice1.x} / y: ${triangulo2.vertice1.y}`
   );
   console.log(
     ` - Vértice 2 - x: ${triangulo2.vertice2.x} / y: ${triangulo2.vertice2.y}`
@@ -128,7 +128,7 @@ if (triangulo2 !== null) {
 
 if (triangulo3 !== null) {
   console.log(
-    `\nTriângulo 3:\n - Vértice 1 - x: ${triangulo3.vertice1.x} / y: ${triangulo3.vertice1.y};`
+    `\nTriângulo 3:\n - Vértice 1 - x: ${triangulo3.vertice1.x} / y: ${triangulo3.vertice1.y}`
   );
   console.log(
     ` - Vértice 2 - x: ${triangulo3.vertice2.x} / y: ${triangulo3.vertice2.y}`
@@ -143,9 +143,9 @@ if (triangulo3 !== null) {
 
 //Clonando triangulo 2 se ele existir:
 if (triangulo2 !== null) {
-  let nvTriangulo = triangulo2.clone();
+  const nvTriangulo = triangulo2.clone();
   console.log(
-    `\nNovo triangulo (Cópia do 2):\n - Vértice 1 - x: ${nvTriangulo.vertice1.x} / y: ${nvTriangulo.vertice1.y};`
+    `\nNovo triangulo (Cópia do 2):\n - Vértice 1 - x: ${nvTriangulo.vertice1.x} / y: ${nvTriangulo.vertice1.y}`
   );
   console.log(
     ` - Vértice 2 - x: ${nvTriangulo.vertice2.x} / y: ${nvTriangulo.vertice2.y}`

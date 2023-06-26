@@ -1,5 +1,5 @@
 //Importando classes
-import Vertice from "./Vertice.js";
+import Vertice from "./Formas/Vertice.js";
 
 //Importando biblioteca PromptSync
 import PromptSync from "prompt-sync";

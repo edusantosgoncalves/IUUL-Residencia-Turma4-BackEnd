@@ -1,5 +1,5 @@
 //Importando classes
-import Poligono from "./Poligono.js";
+import Poligono from "./Formas/Poligono.js";
 
 //Importando biblioteca PromptSync
 import PromptSync from "prompt-sync";

@@ -56,9 +56,9 @@ class Turma {
     if (alunoEscolhido === null) return false;
 
     //Se encontrar, verifique qual das 2 provas é e insira a nota
-    if (prova === "p1") {
+    if (prova === "p1" || prova === "P1") {
       alunoEscolhido.p1 = nota;
-    } else if (prova === "p2") {
+    } else if (prova === "p2" || prova === "P2") {
       alunoEscolhido.p2 = nota;
     } else {
       return false;
@@ -95,4 +95,108 @@ class Turma {
   }
 }
 
-//Ler dados e notas e imprimir a lista de alunos - a fazer
+//Ler dados e notas e imprimir a lista de alunos
+
+//Importando biblioteca PromptSync
+import PromptSync from "prompt-sync";
+
+//Instanciando-a na variável prompt
+const prompt = PromptSync({ sigint: true }); // Permite terminar o programa com CTRL-C
+let entrada;
+let turma = new Turma();
+
+//Funções para o menu
+function menu1() {
+  entrada = prompt(
+    "Insira o nome e matricula do aluno no formato matricula,nome: "
+  );
+
+  let alunoIns = entrada.split(",");
+  while (alunoIns.length != 2 || isNaN(alunoIns[0])) {
+    entrada = prompt(
+      "INCORRETO! Insira o nome e matricula do aluno no formato matricula,nome: "
+    );
+
+    alunoIns = entrada.split(",");
+  }
+
+  turma.inscreveAluno(alunoIns[1], alunoIns[0]);
+}
+
+function menu2() {
+  entrada = prompt("Insira a matrícula do aluno: ");
+
+  while (isNaN(entrada)) {
+    entrada = prompt("INCORRETO! Insira a matrícula do aluno: ");
+  }
+
+  turma.removerAluno(entrada);
+}
+
+function menu3() {
+  entrada = prompt(
+    "Insira a matrícula do aluno, prova e nota no formato matricula,prova,nota: "
+  );
+
+  let alunoNota = entrada.split(",");
+
+  while (
+    alunoNota.length < 3 ||
+    isNaN(
+      alunoNota[0] ||
+        isNaN(alunoNota[2]) ||
+        (alunoNota[1] !== "p1" &&
+          alunoNota[1] !== "P1" &&
+          alunoNota[1] !== "p2" &&
+          alunoNota[1] !== "P2")
+    )
+  ) {
+    entrada = prompt(
+      "Insira a matrícula do aluno, prova e nota no formato matricula,prova,nota: "
+    );
+    alunoNota = entrada.split(",");
+  }
+
+  turma.lancarNota(alunoNota[0], alunoNota[1], alunoNota[2]);
+}
+
+function menu4() {
+  console.log("\n");
+  turma.diario;
+  console.log("\n");
+}
+
+//Função de menu
+function menu() {
+  console.log("\n---- TURMA ----");
+  console.log("1 - Inscrever aluno");
+  console.log("2 - Remover aluno");
+  console.log("3 - Lançar nota");
+  console.log("4 - Imprimir diario");
+  console.log("5 - Sair\n");
+
+  entrada = prompt();
+  if (entrada === 5) return false;
+  if (entrada === 1) {
+    menu1();
+    return true;
+  }
+  if (entrada === 2) {
+    menu2();
+    return true;
+  }
+  if (entrada === 3) {
+    menu3();
+    return true;
+  }
+  if (entrada === 4) {
+    menu4();
+    return true;
+  }
+}
+
+//Abrindo menu
+let vrfMenu = true;
+while (vrfMenu) {
+  menu();
+}
