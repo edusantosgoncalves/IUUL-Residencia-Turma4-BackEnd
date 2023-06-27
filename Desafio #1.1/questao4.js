@@ -33,19 +33,24 @@ class Turma {
 
   inscreveAluno(nome, matricula) {
     //Verificando se o aluno existe
-    for (aluno of this._alunos) {
+    for (const aluno of this._alunos) {
       if (aluno.matricula === matricula) return false;
     }
 
-    this._alunos.push(new Aluno())(nome, matricula);
+    this._alunos.push(new Aluno(nome, matricula));
     return true;
   }
 
   lancarNota(matricula, prova, nota) {
-    let alunoEscolhido = null;
+    //Verificando se a prova ou a nota estão corretas
+    if (prova !== "P1" && prova !== "p1" && prova !== "P2" && prova !== "p2")
+      return "Prova incorreta!";
+
+    if (nota < 0 || nota > 10) return "Nota inválida!";
 
     //Buscar aluno pela matrícula, se encontrar, obtenha-o e saia do loop
-    for (aluno of this._alunos) {
+    let alunoEscolhido = null;
+    for (const aluno of this._alunos) {
       if (aluno.matricula === matricula) {
         alunoEscolhido = aluno;
         break;
@@ -53,21 +58,21 @@ class Turma {
     }
 
     //Se não encontrar o aluno, retorne falso
-    if (alunoEscolhido === null) return false;
+    if (alunoEscolhido === null) return "Aluno não encontrado";
 
     //Se encontrar, verifique qual das 2 provas é e insira a nota
     if (prova === "p1" || prova === "P1") {
-      alunoEscolhido.p1 = nota;
-    } else if (prova === "p2" || prova === "P2") {
-      alunoEscolhido.p2 = nota;
+      alunoEscolhido.p1 = parseInt(nota);
+      return "Nota da P1 adicionada!"; // Verdadeiro
     } else {
-      return false;
+      alunoEscolhido.p2 = parseInt(nota);
+      return "Nota da P2 adicionada";
     }
   }
 
   removerAluno(matricula) {
     //Buscar aluno pela matrícula, se encontrar, remova-o e retorne verdadeiro
-    for (aluno of this._alunos) {
+    for (const aluno of this._alunos) {
       if (aluno.matricula === matricula) {
         this._alunos.pop(aluno);
         return true;
@@ -83,11 +88,13 @@ class Turma {
     console.log("Matricula  Nome        P1   P2   NF");
     console.log("—---------------------------------------");
     //Iterando sobre os alunos da turma
-    for (aluno of this._alunos) {
+    for (const aluno of this._alunos) {
       console.log(
         `${aluno.matricula}  ${aluno.nome}        ${
-          aluno.p1 !== null ? aluno.p1 : "-"
-        }   ${aluno.p2 !== null ? aluno.p2 : "-"}   ${aluno.media.toFixed()}`
+          aluno.p1 !== null ? aluno.p1.toFixed(2) : "-"
+        }   ${
+          aluno.p2 !== null ? aluno.p2.toFixed(2) : "-"
+        }   ${aluno.media.toFixed(2)}`
       );
     }
 
@@ -119,8 +126,11 @@ function menu1() {
 
     alunoIns = entrada.split(",");
   }
-
-  turma.inscreveAluno(alunoIns[1], alunoIns[0]);
+  console.log(
+    turma.inscreveAluno(alunoIns[1].trim(), alunoIns[0].trim())
+      ? "Aluno inscrito!"
+      : "Aluno já inscrito!"
+  );
 }
 
 function menu2() {
@@ -130,7 +140,11 @@ function menu2() {
     entrada = prompt("INCORRETO! Insira a matrícula do aluno: ");
   }
 
-  turma.removerAluno(entrada);
+  console.log(
+    turma.removerAluno(entrada.trim())
+      ? "Aluno removido!"
+      : "Aluno não encontrado!"
+  );
 }
 
 function menu3() {
@@ -157,7 +171,13 @@ function menu3() {
     alunoNota = entrada.split(",");
   }
 
-  turma.lancarNota(alunoNota[0], alunoNota[1], alunoNota[2]);
+  console.log(
+    turma.lancarNota(
+      alunoNota[0].trim(),
+      alunoNota[1].trim(),
+      alunoNota[2].trim()
+    )
+  );
 }
 
 function menu4() {
@@ -166,37 +186,35 @@ function menu4() {
   console.log("\n");
 }
 
-//Função de menu
-function menu() {
+//Abrindo menu
+let vrfMenu = true;
+while (vrfMenu) {
   console.log("\n---- TURMA ----");
   console.log("1 - Inscrever aluno");
   console.log("2 - Remover aluno");
   console.log("3 - Lançar nota");
   console.log("4 - Imprimir diario");
   console.log("5 - Sair\n");
+  entrada = prompt("Para onde deseja ir? ");
 
-  entrada = prompt();
-  if (entrada === 5) return false;
-  if (entrada === 1) {
-    menu1();
-    return true;
+  switch (entrada.trim()) {
+    case "1":
+      menu1();
+      break;
+    case "2":
+      menu2();
+      break;
+    case "3":
+      menu3();
+      break;
+    case "4":
+      menu4();
+      break;
+    case "5":
+      vrfMenu = false;
+      break;
+    default:
+      console.log("OPÇÃO INCORRETA!\n");
+      break;
   }
-  if (entrada === 2) {
-    menu2();
-    return true;
-  }
-  if (entrada === 3) {
-    menu3();
-    return true;
-  }
-  if (entrada === 4) {
-    menu4();
-    return true;
-  }
-}
-
-//Abrindo menu
-let vrfMenu = true;
-while (vrfMenu) {
-  menu();
 }
