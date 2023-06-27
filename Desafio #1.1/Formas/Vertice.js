@@ -13,7 +13,6 @@ export default class Vertice {
   }
 
   //Método para calcular a distância euclidiana de um vértice a outro
-  //Código getter?
   distancia(outroVertice) {
     const dx = outroVertice.x - this._x;
     const dy = outroVertice.y - this._y;
