@@ -32,9 +32,12 @@ export default class Paciente {
       throw { codErro: 5, descErro: "CPF inválido!" };
     }
 
+    //Obtendo data
+    const dataSplit = dtNasc.split("/");
+
     this.#cpf = cpf;
     this.#nome = nome;
-    this.#dtNasc = dtNasc;
+    this.#dtNasc = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
   }
 
   //Getters dos atributos

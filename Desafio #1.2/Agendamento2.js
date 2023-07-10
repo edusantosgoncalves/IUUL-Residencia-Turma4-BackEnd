@@ -1,4 +1,4 @@
-export default class Agendamento {
+export default class Agendamento2 {
   constructor(data, horaIni, horaFim, paciente) {
     //Validando data e horas
     const vrfData = this.#validaDt(data, horaIni, horaFim);
@@ -40,21 +40,44 @@ export default class Agendamento {
 
     //Setando data
     const dataSplit = data.split("/");
-    this.#data = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
+    this.#inicio = new Date(
+      dataSplit[2],
+      dataSplit[1] - 1,
+      dataSplit[0],
+      horaIni.substring(0, 2),
+      horaIni.substring(2)
+    );
+    this.#fim = new Date(
+      dataSplit[2],
+      dataSplit[1] - 1,
+      dataSplit[0],
+      horaFim.substring(0, 2),
+      horaFim.substring(2)
+    );
 
-    this.#horaIni = new Date();
+    /*this.#horaIni = new Date();
     this.#horaIni.setHours(Number(horaIni.substring(0, 2)));
     this.#horaIni.setMinutes(Number(horaIni.substring(2)));
 
     this.#horaFim = new Date();
     this.#horaFim.setHours(Number(horaFim.substring(0, 2)));
     this.#horaFim.setMinutes(Number(horaFim.substring(2)));
-
+*/
     this.#paciente = paciente;
   }
 
   get tempo() {
-    const hrIni = parseInt(this.#horaIni.substr(0, 2));
+    const diffEmMilissegundos = Math.abs(this.#fim - this.#inicio);
+    const diffEmMinutos = Math.floor(diffEmMilissegundos / (1000 * 60));
+    const horas = Math.floor(diffEmMinutos / 60);
+    const minutos = diffEmMinutos % 60;
+
+    return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(
+      2,
+      "0"
+    )}`;
+    //return { horas, minutos };
+    /*const hrIni = parseInt(this.#horaIni.substr(0, 2));
     const minIni = parseInt(this.#horaIni.substr(2));
     const hrFim = parseInt(this.#horaFim.substr(0, 2));
     const minFim = parseInt(this.#horaFim.substr(2));
@@ -74,25 +97,17 @@ export default class Agendamento {
     return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(
       2,
       "0"
-    )}`;
+    )}`;*/
   }
 
-  get data() {
-    return this.#data;
+  get horaInicio() {}
+
+  get inicio() {
+    return this.#inicio;
   }
 
-  get horaIni() {
-    return this.#horaIni;
-    /*const horas = this.#horaIni.substr(0, 2);
-    const minutos = this.#horaIni.substr(2);
-    return `${horas.padStart(2, "0")}:${minutos.padStart(2, "0")}`;*/
-  }
-
-  get horaFim() {
-    return this.#horaFim;
-    /*const horas = this.#horaFim.substr(0, 2);
-    const minutos = this.#horaFim.substr(2);
-    return `${horas.padStart(2, "0")}:${minutos.padStart(2, "0")}`;*/
+  get fim() {
+    return this.#fim;
   }
 
   get cpfPaciente() {
