@@ -1,4 +1,8 @@
 export default class Agendamento2 {
+  #inicio;
+  #fim;
+  #paciente;
+
   constructor(data, horaIni, horaFim, paciente) {
     //Validando data e horas
     const vrfData = this.#validaDt(data, horaIni, horaFim);
@@ -47,6 +51,7 @@ export default class Agendamento2 {
       horaIni.substring(0, 2),
       horaIni.substring(2)
     );
+
     this.#fim = new Date(
       dataSplit[2],
       dataSplit[1] - 1,
@@ -55,14 +60,6 @@ export default class Agendamento2 {
       horaFim.substring(2)
     );
 
-    /*this.#horaIni = new Date();
-    this.#horaIni.setHours(Number(horaIni.substring(0, 2)));
-    this.#horaIni.setMinutes(Number(horaIni.substring(2)));
-
-    this.#horaFim = new Date();
-    this.#horaFim.setHours(Number(horaFim.substring(0, 2)));
-    this.#horaFim.setMinutes(Number(horaFim.substring(2)));
-*/
     this.#paciente = paciente;
   }
 
@@ -76,31 +73,21 @@ export default class Agendamento2 {
       2,
       "0"
     )}`;
-    //return { horas, minutos };
-    /*const hrIni = parseInt(this.#horaIni.substr(0, 2));
-    const minIni = parseInt(this.#horaIni.substr(2));
-    const hrFim = parseInt(this.#horaFim.substr(0, 2));
-    const minFim = parseInt(this.#horaFim.substr(2));
-
-    // Passando as horas e minutos para somente minutos
-    const minutosIni = hrIni * 60 + minIni;
-    const minutosFim = hrFim * 60 + minFim;
-
-    // Calculando a diferença entre os minutos
-    const diferencaMinutos = minutosFim - minutosIni;
-
-    // Passando a diferença para horas e minutos
-    const horas = Math.floor(diferencaMinutos / 60);
-    const minutos = diferencaMinutos % 60;
-
-    // Retornando o tempo formatado em HH:MM
-    return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(
-      2,
-      "0"
-    )}`;*/
   }
 
-  get horaInicio() {}
+  get horaInicio() {
+    return `${this.#inicio.getHours()}:${this.#inicio.getMinutes()}`;
+  }
+
+  get horaFim() {
+    return `${this.#fim.getHours()}:${this.#fim.getMinutes()}`;
+  }
+
+  get data() {
+    return `${this.#inicio.getDate()}/${
+      parseInt(this.#inicio.getMonth()) + 1
+    }/${this.#inicio.getFullYear()}`;
+  }
 
   get inicio() {
     return this.#inicio;
@@ -141,7 +128,8 @@ export default class Agendamento2 {
     //Validando se as horas estão no padrão correto
     const regexHora = /^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$/;
 
-    if (!regexHora.test(horaIni) || !regexHora.test(horaFim)) return 3;
+    if (!regexHora.test(horaIni)) return 3.1;
+    if (!regexHora.test(horaFim)) return 3.2;
 
     //Convertendo horas para instancias date
     const hrIni = new Date();

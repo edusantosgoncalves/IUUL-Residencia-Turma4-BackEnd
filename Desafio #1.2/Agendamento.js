@@ -107,6 +107,18 @@ export default class Agendamento {
     return this.#paciente.dtNasc;
   }
 
+  get dia() {
+    return parseInt(this.#data.getDate());
+  }
+
+  get mes() {
+    return parseInt(this.#data.getMonth()) + 1;
+  }
+
+  get dia() {
+    return parseInt(this.#data.getFullYear());
+  }
+
   #validaDt(data, horaIni, horaFim) {
     const regexData =
       /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}$/;

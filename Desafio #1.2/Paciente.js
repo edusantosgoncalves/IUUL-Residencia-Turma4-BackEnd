@@ -1,4 +1,8 @@
 export default class Paciente {
+  #cpf;
+  #nome;
+  #dtNasc;
+
   constructor(cpf, nome, dtNasc) {
     //Verificar se o nome do usuário tem 5 caracteres
     if (nome.length < 5)
@@ -50,7 +54,25 @@ export default class Paciente {
   }
 
   get dtNasc() {
-    return this.#dtNasc;
+    return `${this.#dtNasc.getDate()}/${
+      parseInt(this.#dtNasc.getMonth()) + 1
+    }/${this.#dtNasc.getFullYear()}`;
+  }
+
+  get idade() {
+    const dtHoje = new Date();
+    let idade = dtHoje.getFullYear() - this.#dtNasc.getFullYear();
+
+    const mesAtual = dtHoje.getMonth();
+    const mesNasc = this.#dtNasc.getMonth();
+    const diaAtual = dtHoje.getDate();
+    const diaNasc = this.#dtNasc.getDate();
+
+    if (mesAtual < mesNasc || (mesAtual === mesNasc && diaAtual < diaNasc)) {
+      idade--;
+    }
+
+    return idade;
   }
 
   //Verificar se funciona...
@@ -58,13 +80,13 @@ export default class Paciente {
     if (cpf.length !== 11) return false;
 
     //Verificando se todos os dígitos são iguais
-    const vrfDigitosIguais = true;
-    const primeiroDigito = cpf[0];
+    let vrfDigitosIguais = true;
+    const primeiroDigito = cpf.charAt(0);
 
     //Iterando sobre todos os dígitos do cpf
     for (let i = 1; i < cpf.length; i++) {
       //Se encontrar um dígito diferente, o cpf não tem todos os dígitos iguais
-      if (cpf[i] !== primeiroDigito) {
+      if (cpf.charAt(i) !== primeiroDigito) {
         vrfDigitosIguais = false;
         break;
       }
@@ -78,7 +100,7 @@ export default class Paciente {
     let digito = 0;
 
     //Validando primeiro dígito verificador
-    for (i = 1; i <= 9; i++)
+    for (let i = 1; i <= 9; i++)
       soma = soma + parseInt(cpf.substring(i - 1, i)) * (11 - i);
 
     resto = soma % 11;
@@ -90,13 +112,14 @@ export default class Paciente {
 
     //Validando segundo dígito verificador
     soma = 0; //Zerando valor da soma anterior
-    for (i = 1; i <= 10; i++)
+    for (let i = 1; i <= 10; i++)
       soma = soma + parseInt(cpf.substring(i - 1, i)) * (12 - i);
     resto = soma % 11;
 
     if (resto == 0 || resto == 1) digito = 0;
     if (resto >= 2 && resto <= 10) digito = 11 - resto;
-    if (resto !== parseInt(cpf.substring(10, 11))) return false;
+
+    if (digito !== parseInt(cpf.substring(10, 11))) return false;
 
     return true;
   }
@@ -108,7 +131,7 @@ export default class Paciente {
     if (!regexData.test(dtNasc)) return 1;
 
     //Criando instância Date para comparar as datas
-    let dataSplit = data.split("/");
+    let dataSplit = dtNasc.split("/");
     let dataNasc = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
 
     //Validando se a data inserida é igual ou anterior a data atual
