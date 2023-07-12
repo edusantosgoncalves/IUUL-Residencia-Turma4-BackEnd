@@ -16,8 +16,20 @@ const consultorio = new Consultorio();
 //Testes (para deixar já incluídos na "base") - addPacientes
 consultorio.addPaciente("46531583045", "Eduardo Santos", "29/08/2000");
 consultorio.addPaciente("86759561856", "Adriana", "09/03/1983");
-consultorio.addPaciente("53448377988", "Isabella", "08/07/2015");
+try {
+  consultorio.addPaciente("53448377988", "Isabella", "08/07/2015");
+} catch (e) {
+  console.log(`Erro: ${e.descErro}`);
+}
 consultorio.addPaciente("98411048063", "Ericson", "15/05/1974");
+
+//Testes agendaConsulta
+let pac = consultorio.buscaPaciente("46531583045");
+consultorio.agendaConsulta(pac, "14/07/2023", "0900", "0930");
+pac = consultorio.buscaPaciente("86759561856");
+consultorio.agendaConsulta(pac, "15/07/2023", "1200", "1215");
+pac = consultorio.buscaPaciente("98411048063");
+consultorio.agendaConsulta(pac, "14/07/2023", "1100", "1145");
 
 //Definindo funções do menu
 async function menuPacientes() {
@@ -105,7 +117,15 @@ async function menuPacientes() {
 
 async function menuAgenda() {
   let menuAg = true;
-  let dadosAgendamento = { paciente: "", data: "", horaIni: "", horaFim: "" };
+  let dadosAgendamento = {
+    paciente: "",
+    data: "",
+    horaIni: "",
+    horaFim: "",
+    //Para listar agenda:
+    dtInicio: "",
+    dtFim: "",
+  };
   let paciente = undefined;
 
   while (menuAg) {
@@ -253,7 +273,39 @@ async function menuAgenda() {
         }
         break;
       case "3":
-        consultorio.listaAgenda;
+        entrada = prompt("Apresentar a agenda T-Toda ou P-Período: ");
+        while (entrada !== "P" && entrada !== "T") {
+          entrada = prompt(
+            "Opção incorreta! Apresentar a agenda T-Toda ou P-Período: "
+          );
+        }
+        if (entrada === "T") {
+          consultorio.listaAgenda();
+        } else {
+          entrada = prompt("Data inicial: ");
+          dadosAgendamento.dtInicio = entrada;
+          entrada = prompt("Data final: ");
+          dadosAgendamento.dtFim = entrada;
+
+          try {
+            consultorio.listaAgenda(
+              dadosAgendamento.dtInicio,
+              dadosAgendamento.dtFim
+            );
+          } catch (e) {
+            console.log(`\nErro: ${e.descErro ? e.descErro : e}\n`);
+            switch (e.codErro) {
+              case 1:
+                entrada = prompt("Data inicial: ");
+                dadosAgendamento.dtInicio = entrada;
+                break;
+              case 2:
+                entrada = prompt("Data final: ");
+                dadosAgendamento.dtFim = entrada;
+                break;
+            }
+          }
+        }
         break;
       case "4":
         menuAg = false;

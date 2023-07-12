@@ -54,9 +54,9 @@ export default class Paciente {
   }
 
   get dtNasc() {
-    return `${this.#dtNasc.getDate()}/${
+    return `${String(this.#dtNasc.getDate()).padStart(2, "0")}/${String(
       parseInt(this.#dtNasc.getMonth()) + 1
-    }/${this.#dtNasc.getFullYear()}`;
+    ).padStart(2, "0")}/${String(this.#dtNasc.getFullYear()).padStart(2, "0")}`;
   }
 
   get idade() {

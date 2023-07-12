@@ -49,7 +49,7 @@ export default class Agendamento2 {
       dataSplit[1] - 1,
       dataSplit[0],
       horaIni.substring(0, 2),
-      horaIni.substring(2)
+      horaIni.substring(2, 4)
     );
 
     this.#fim = new Date(
@@ -57,7 +57,7 @@ export default class Agendamento2 {
       dataSplit[1] - 1,
       dataSplit[0],
       horaFim.substring(0, 2),
-      horaFim.substring(2)
+      horaFim.substring(2, 4)
     );
 
     this.#paciente = paciente;
@@ -76,17 +76,21 @@ export default class Agendamento2 {
   }
 
   get horaInicio() {
-    return `${this.#inicio.getHours()}:${this.#inicio.getMinutes()}`;
+    return `${String(this.#inicio.getHours()).padStart(2, "0")}:${String(
+      this.#inicio.getMinutes()
+    ).padStart(2, "0")}`;
   }
 
   get horaFim() {
-    return `${this.#fim.getHours()}:${this.#fim.getMinutes()}`;
+    return `${String(this.#fim.getHours()).padStart(2, "0")}:${String(
+      this.#fim.getMinutes()
+    ).padStart(2, "0")}`;
   }
 
   get data() {
-    return `${this.#inicio.getDate()}/${
+    return `${String(this.#inicio.getDate()).padStart(2, "0")}/${String(
       parseInt(this.#inicio.getMonth()) + 1
-    }/${this.#inicio.getFullYear()}`;
+    ).padStart(2, "0")}/${String(this.#inicio.getFullYear()).padStart(2, "0")}`;
   }
 
   get inicio() {
@@ -123,7 +127,7 @@ export default class Agendamento2 {
     let dtAtual = new Date(new Date().toDateString());
 
     //Validando se a data inserida é igual ou posterior a data atual
-    if (!(dt === dtAtual) || !(dt > dtAtual)) return 2;
+    if (dt < dtAtual) return 2;
 
     //Validando se as horas estão no padrão correto
     const regexHora = /^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$/;

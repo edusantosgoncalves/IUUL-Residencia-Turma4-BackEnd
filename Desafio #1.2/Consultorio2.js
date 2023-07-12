@@ -35,7 +35,7 @@ export default class Consultorio {
       throw { codErro: 1, descErro: "Paciente não cadastrado!" };
 
     //Buscar se o paciente tem alguma consulta agendada futura
-    if (this.#verificaFuturoAgendamento(cpf) !== undefined)
+    if (this.#buscaFuturoAgendamento(cpf) !== undefined)
       throw { codErro: 2, descErro: "Paciente com consulta futura agendada!" };
 
     //Se não tiver, removendo os seus agendamentos
@@ -75,7 +75,7 @@ export default class Consultorio {
     this.#imprimirPacientes();
   }
 
-  #verificaFuturoAgendamento(cpf) {
+  #buscaFuturoAgendamento(cpf) {
     //Verificar se há futuros agendamentos
     return this.#agenda.find(
       (agendamento) =>
@@ -90,7 +90,7 @@ export default class Consultorio {
     //throw { codErro: 8, descErro: "Paciente não encontrado!" };
 
     //Verifica se há agendamentos futuros
-    if (this.#verificaFuturoAgendamento(cpf) !== undefined)
+    if (this.#buscaFuturoAgendamento(paciente.cpf) !== undefined)
       throw {
         codErro: 8,
         descErro: "Já existe um agendamento futuro para este paciente!",
@@ -156,21 +156,66 @@ export default class Consultorio {
     );
   }
 
-  get listaAgenda() {
-    //Ordenar lista por data de agendamento
-    this.#removeAgendamentos.sort((agendamento1, agendamento2) => {
-      const dia1 = agendamento1.dia;
-      const mes1 = agendamento1.mes;
-      const ano1 = agendamento1.ano;
+  //CORRIGIR - AINDA NÃO FUNCIONANDO...
+  #filtraAgenda(dataIni, dataFim, agenda) {
+    if (dataIni !== undefined) {
+      agenda.filter((agendamento) => {
+        return agendamento.inicio - dataIni >= 0;
+        /*(
+          agendamento.inicio.getFullYear() > dataIni.getFullYear() ||
+          (agendamento.inicio.getFullYear() === dataIni.getFullYear() &&
+            agendamento.inicio.getMonth() > dataIni.getMonth()) ||
+          (agendamento.inicio.getFullYear() === dataIni.getFullYear() &&
+            agendamento.inicio.getMonth() === dataIni.getMonth() &&
+            agendamento.inicio.getDate() >= dataIni.getDate())
+        );*/
+      });
+    } else if (dataFim !== undefined) {
+      agenda.filter((agendamento) => {
+        return agendamento.fim - dataFim <= 0; /*return (
+          agendamento.inicio.getFullYear() < dataFim.getFullYear() ||
+          (agendamento.inicio.getFullYear() === dataFim.getFullYear() &&
+            agendamento.inicio.getMonth() < dataFim.getMonth()) ||
+          (agendamento.inicio.getFullYear() === dataFim.getFullYear() &&
+            agendamento.inicio.getMonth() === dataFim.getMonth() &&
+            agendamento.inicio.getDate() <= dataFim.getDate())
+        );*/
+      });
+    }
+    return agenda;
+  }
 
-      const dia2 = agendamento2.dia;
-      const mes2 = agendamento2.mes;
-      const ano2 = agendamento2.ano;
+  listaAgenda(dataInicial, dataFinal) {
+    //Verificando se existem os parametros de data e se são válidos
+    if (!validaRegexData(dataInicial))
+      throw { codErro: 1, descErro: "Data inicial em formato incorreta!" };
 
-      return ano1 === ano2 && mes1 === mes2 && dia1 === dia2 ? 0 : 1;
-    });
+    if (!validaRegexData(dataFinal))
+      throw { codErro: 2, descErro: "Data final em formato incorreta!" };
 
-    this.#imprimirAgendamentos();
+    let dtIni = dataInicial !== undefined ? dataInicial.split("/") : undefined;
+    dtIni =
+      dtIni !== undefined
+        ? new Date(dtIni[2], dtIni[1] - 1, dtIni[0], 23, 59, 999)
+        : undefined;
+    let dtFim = dataFinal !== undefined ? dataInicial.split("/") : undefined;
+    dtFim =
+      dtFim !== undefined
+        ? new Date(dtFim[2], dtFim[1] - 1, dtFim[0], 23, 59, 999)
+        : undefined;
+
+    //Ordenando lista por agendamento
+    let agendaListar = [
+      ...this.#agenda.sort((agendamento1, agendamento2) => {
+        return agendamento1.inicio - agendamento2.inicio;
+      }),
+    ];
+
+    //Filtrar agenda
+    agendaListar = this.#filtraAgenda(dtIni, dtFim, agendaListar);
+
+    //Imprimir agenda
+    this.#imprimirAgendamentos(agendaListar);
   }
 
   #removeAgendamentos(cpf) {
@@ -197,25 +242,36 @@ export default class Consultorio {
   }
 
   #imprimirPacientes() {
+    let agendamento = undefined;
     console.log("------------------------------------------------------------");
     console.log("CPF           Nome        Dt.Nasc.   Idade ");
     for (const paciente of this.#pacientes) {
       console.log(
         `${paciente.cpf}  ${paciente.nome}  ${paciente.dtNasc}  ${paciente.idade}`
       );
+      agendamento = this.#buscaFuturoAgendamento(paciente.cpf);
+      if (agendamento !== undefined)
+        console.log(
+          `            Agendado para: ${agendamento.data}\n            ${agendamento.horaInicio} às ${agendamento.horaFim}`
+        );
     }
     console.log("------------------------------------------------------------");
   }
 
-  #imprimirAgendamentos() {
-    //Ajustar...
-    ("------------------------------------------------------------");
+  #imprimirAgendamentos(agenda) {
+    let dataAnterior = null;
+    console.log("------------------------------------------------------------");
     console.log("  Data   H.Ini  H.Fim  Tempo  Nome  Dt.Nasc. ");
-    for (const agendamento of this.#agenda) {
+    for (const agendamento of agenda) {
       console.log(
-        `${agendamento.data}  ${agendamento.horaIni}  ${agendamento.horaFim}  ${agendamento.tempo}  ${agendamento.nomePaciente} ${agendamento.dtNascPaciente} `
+        `${
+          agendamento.data === dataAnterior ? `          ` : agendamento.data
+        }  ${agendamento.horaInicio}  ${agendamento.horaFim}  ${
+          agendamento.tempo
+        }  ${agendamento.nomePaciente} ${agendamento.dtNascPaciente} `
       );
+      dataAnterior = agendamento.data;
     }
-    ("------------------------------------------------------------");
+    console.log("------------------------------------------------------------");
   }
 }
