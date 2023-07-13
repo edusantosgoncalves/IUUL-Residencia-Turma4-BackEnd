@@ -1,4 +1,8 @@
 export default class Agendamento {
+  #inicio;
+  #fim;
+  #paciente;
+
   constructor(data, horaIni, horaFim, paciente) {
     //Validando data e horas
     const vrfData = this.#validaDt(data, horaIni, horaFim);
@@ -40,85 +44,85 @@ export default class Agendamento {
 
     //Setando data
     const dataSplit = data.split("/");
-    this.#data = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
+    this.#inicio = new Date(
+      dataSplit[2],
+      dataSplit[1] - 1,
+      dataSplit[0],
+      horaIni.substring(0, 2),
+      horaIni.substring(2, 4)
+    );
 
-    this.#horaIni = new Date();
-    this.#horaIni.setHours(Number(horaIni.substring(0, 2)));
-    this.#horaIni.setMinutes(Number(horaIni.substring(2)));
-
-    this.#horaFim = new Date();
-    this.#horaFim.setHours(Number(horaFim.substring(0, 2)));
-    this.#horaFim.setMinutes(Number(horaFim.substring(2)));
+    this.#fim = new Date(
+      dataSplit[2],
+      dataSplit[1] - 1,
+      dataSplit[0],
+      horaFim.substring(0, 2),
+      horaFim.substring(2, 4)
+    );
 
     this.#paciente = paciente;
   }
 
+  //Obter tempo da consulta
   get tempo() {
-    const hrIni = parseInt(this.#horaIni.substr(0, 2));
-    const minIni = parseInt(this.#horaIni.substr(2));
-    const hrFim = parseInt(this.#horaFim.substr(0, 2));
-    const minFim = parseInt(this.#horaFim.substr(2));
+    const diffEmMilissegundos = Math.abs(this.#fim - this.#inicio);
+    const diffEmMinutos = Math.floor(diffEmMilissegundos / (1000 * 60));
+    const horas = Math.floor(diffEmMinutos / 60);
+    const minutos = diffEmMinutos % 60;
 
-    // Passando as horas e minutos para somente minutos
-    const minutosIni = hrIni * 60 + minIni;
-    const minutosFim = hrFim * 60 + minFim;
-
-    // Calculando a diferença entre os minutos
-    const diferencaMinutos = minutosFim - minutosIni;
-
-    // Passando a diferença para horas e minutos
-    const horas = Math.floor(diferencaMinutos / 60);
-    const minutos = diferencaMinutos % 60;
-
-    // Retornando o tempo formatado em HH:MM
     return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(
       2,
       "0"
     )}`;
   }
 
-  get data() {
-    return this.#data;
+  //Obtendo hora de início da consulta
+  get horaInicio() {
+    return `${String(this.#inicio.getHours()).padStart(2, "0")}:${String(
+      this.#inicio.getMinutes()
+    ).padStart(2, "0")}`;
   }
 
-  get horaIni() {
-    return this.#horaIni;
-    /*const horas = this.#horaIni.substr(0, 2);
-    const minutos = this.#horaIni.substr(2);
-    return `${horas.padStart(2, "0")}:${minutos.padStart(2, "0")}`;*/
-  }
-
+  //Obtendo hora final da consulta
   get horaFim() {
-    return this.#horaFim;
-    /*const horas = this.#horaFim.substr(0, 2);
-    const minutos = this.#horaFim.substr(2);
-    return `${horas.padStart(2, "0")}:${minutos.padStart(2, "0")}`;*/
+    return `${String(this.#fim.getHours()).padStart(2, "0")}:${String(
+      this.#fim.getMinutes()
+    ).padStart(2, "0")}`;
   }
 
+  //Obter data da consulta
+  get data() {
+    return `${String(this.#inicio.getDate()).padStart(2, "0")}/${String(
+      parseInt(this.#inicio.getMonth()) + 1
+    ).padStart(2, "0")}/${String(this.#inicio.getFullYear()).padStart(2, "0")}`;
+  }
+
+  //Obter data e hora de início da consulta
+  get inicio() {
+    return this.#inicio;
+  }
+
+  //Obter data e hora final da consulta
+  get fim() {
+    return this.#fim;
+  }
+
+  //Obter cpf do paciente
   get cpfPaciente() {
     return this.#paciente.cpf;
   }
 
+  //Obter nome do paciente
   get nomePaciente() {
     return this.#paciente.nome;
   }
 
+  //Obter data de nascimento do paciente
   get dtNascPaciente() {
     return this.#paciente.dtNasc;
   }
 
-  get dia() {
-    return parseInt(this.#data.getDate());
-  }
-
-  get mes() {
-    return parseInt(this.#data.getMonth()) + 1;
-  }
-
-  get dia() {
-    return parseInt(this.#data.getFullYear());
-  }
-
+  //Função que valida se a data de agendamento é válida
   #validaDt(data, horaIni, horaFim) {
     const regexData =
       /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}$/;
@@ -130,15 +134,16 @@ export default class Agendamento {
     let dataSplit = data.split("/");
     let dt = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
     dt = new Date(dt.toDateString());
-    let dtAtual = new Date(new Date().toDateString());
+    let dtAtual = new Date();
 
     //Validando se a data inserida é igual ou posterior a data atual
-    if (!(dt === dtAtual) || !(dt > dtAtual)) return 2;
+    if (dt < dtAtual) return 2;
 
     //Validando se as horas estão no padrão correto
     const regexHora = /^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$/;
 
-    if (!regexHora.test(horaIni) || !regexHora.test(horaFim)) return 3;
+    if (!regexHora.test(horaIni)) return 3.1;
+    if (!regexHora.test(horaFim)) return 3.2;
 
     //Convertendo horas para instancias date
     const hrIni = new Date();

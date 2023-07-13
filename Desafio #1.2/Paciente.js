@@ -44,21 +44,24 @@ export default class Paciente {
     this.#dtNasc = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
   }
 
-  //Getters dos atributos
+  //Obter cpf do paciente
   get cpf() {
     return this.#cpf;
   }
 
+  //Obter nome do paciente
   get nome() {
     return this.#nome;
   }
 
+  //Obter data de nascimento do paciente
   get dtNasc() {
     return `${String(this.#dtNasc.getDate()).padStart(2, "0")}/${String(
       parseInt(this.#dtNasc.getMonth()) + 1
     ).padStart(2, "0")}/${String(this.#dtNasc.getFullYear()).padStart(2, "0")}`;
   }
 
+  //Obter idade do paciente
   get idade() {
     const dtHoje = new Date();
     let idade = dtHoje.getFullYear() - this.#dtNasc.getFullYear();
@@ -75,7 +78,7 @@ export default class Paciente {
     return idade;
   }
 
-  //Verificar se funciona...
+  //Validar cpf do paciente
   #validaCPF(cpf) {
     if (cpf.length !== 11) return false;
 
@@ -124,6 +127,7 @@ export default class Paciente {
     return true;
   }
 
+  //Validar data de nascimento de paciente
   #validaDtNasc(dtNasc) {
     const regexData =
       /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[1,2])\/(19|20)\d{2}$/;
@@ -135,14 +139,15 @@ export default class Paciente {
     let dataNasc = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
 
     //Validando se a data inserida é igual ou anterior a data atual
-    return new Date(dataNasc.toDateString()) <=
-      new Date(new Date().toDateString())
-      ? 0
-      : 2;
+    return new Date(dataNasc.toDateString()) <= new Date() ? 0 : 2;
   }
 
+  //Validar se a idade do paciente é permitida
   #validaIdade(dtNasc) {
+    //Obtendo dados da data da variável dataNasc
     let dataSplit = dtNasc.split("/");
+
+    //Definindo a data em uma instancia Date e obtendo a data de hoje, assim como a idade
     let data = new Date(dataSplit[2], dataSplit[1] - 1, dataSplit[0]);
     const dtHoje = new Date();
     let idade = dtHoje.getFullYear() - data.getFullYear();

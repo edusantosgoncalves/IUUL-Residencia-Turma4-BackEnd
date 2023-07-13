@@ -2,7 +2,7 @@
 import PromptSync from "prompt-sync";
 
 //Importando classes
-import Consultorio from "./Consultorio2.js";
+import Consultorio from "./Consultorio.js";
 
 //Instanciando-a na variável prompt
 const prompt = PromptSync({ sigint: true }); // Permite terminar o programa com CTRL-C
@@ -19,17 +19,39 @@ consultorio.addPaciente("86759561856", "Adriana", "09/03/1983");
 try {
   consultorio.addPaciente("53448377988", "Isabella", "08/07/2015");
 } catch (e) {
-  console.log(`Erro: ${e.descErro}`);
+  console.log(`\nErro: ${e.descErro}\n`);
 }
 consultorio.addPaciente("98411048063", "Ericson", "15/05/1974");
 
 //Testes agendaConsulta
 let pac = consultorio.buscaPaciente("46531583045");
-consultorio.agendaConsulta(pac, "14/07/2023", "0900", "0930");
+try {
+  consultorio.agendaConsulta(pac, "13/07/2023", "0900", "0930");
+} catch (e) {
+  console.log(`\nErro: ${e.descErro}\n`);
+}
+
 pac = consultorio.buscaPaciente("86759561856");
 consultorio.agendaConsulta(pac, "15/07/2023", "1200", "1215");
 pac = consultorio.buscaPaciente("98411048063");
 consultorio.agendaConsulta(pac, "14/07/2023", "1100", "1145");
+
+pac = consultorio.buscaPaciente("46531583045");
+try {
+  consultorio.agendaConsulta(pac, "15/07/2023", "1200", "1215");
+} catch (e) {
+  console.log(`\nErro: ${e.descErro}\n`);
+}
+try {
+  consultorio.agendaConsulta(pac, "15/07/2023", "1145", "1230");
+} catch (e) {
+  console.log(`\nErro: ${e.descErro}\n`);
+}
+try {
+  consultorio.agendaConsulta(pac, "15/07/2023", "1215", "1230");
+} catch (e) {
+  console.log(`\nErro: ${e.descErro}\n`);
+}
 
 //Definindo funções do menu
 async function menuPacientes() {
