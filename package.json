@@ -1,6 +1,7 @@
 {
   "type": "module",
   "dependencies": {
+    "luxon": "^3.3.0",
     "prompt-sync": "^4.2.0"
   }
 }
