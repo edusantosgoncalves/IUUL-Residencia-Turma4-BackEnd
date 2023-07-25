@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import { DateTime } from "luxon";
 import path from "path";
+
 //Importando classe que valida Pessoa
 import ValidaPessoa from "./ValidaPessoa.js";
 
@@ -11,7 +12,7 @@ var validacoesPessoa = new ValidaPessoa();
 //Validando se foi passado algum arquivo como parametro
 if (process.argv.length < 3) {
   console.error("Não foi recebido arquivo como parâmetro!");
-  process.exit(1);
+  process.exit(0);
 }
 
 // Obtendo o caminho do arquivo
@@ -21,9 +22,10 @@ if (arquivo.split(".").pop() !== "json") {
   console.error("O arquivo recebido não é um JSON!");
   process.exit(0);
 }
+
+//Obtendo o diretório do arquivo
 const diretorioArquivo = path.dirname(arquivo);
 
-console.log(diretorioArquivo);
 // Lendo o arquivo
 fs.readFile(arquivo, "utf8", (err, data) => {
   if (err) {
@@ -43,7 +45,7 @@ fs.readFile(arquivo, "utf8", (err, data) => {
     //Validando os dados do JSON
     validarJSON(objJSON);
 
-    //Exportando arquivo de erros e finalizando
+    //Definindo o nome do arquivo de erro a ser exportado assim como sua localização
     const dtHoje = DateTime.now();
     const nomeArqErros = `${diretorioArquivo}/erros-${String(
       dtHoje.get("day")
@@ -53,6 +55,7 @@ fs.readFile(arquivo, "utf8", (err, data) => {
       dtHoje.get("minute")
     ).padStart(2, "0")}${String(dtHoje.get("second")).padStart(2, "0")}.json`;
 
+    //Exportando arquivo de erros e finalizando
     fs.writeFile(nomeArqErros, JSON.stringify(listaErros), (erroArq) => {
       if (erroArq) throw erroArq;
       console.log(
@@ -65,6 +68,7 @@ fs.readFile(arquivo, "utf8", (err, data) => {
   }
 });
 
+//Função que valida cada pessoa no JSON
 function validarJSON(objJSON) {
   for (const posicaoPessoa in objJSON) {
     const pessoa = objJSON[posicaoPessoa];
