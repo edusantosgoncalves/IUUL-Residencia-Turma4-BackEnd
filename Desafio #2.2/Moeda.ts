@@ -2,10 +2,10 @@
 import axios from "axios";
 
 //Importando tipo listaMoedas
-import { ListaMoedas, ConversaoMoeda } from "./Tipos";
+import { ListaMoedas, ConversaoMoeda } from "./Tipos.js";
 
 export class Moeda {
-  private listaMoedas: ListaMoedas;
+  private listaMoedas!: ListaMoedas; // !: - Forçando o TS a ignorar a regra de ter um valor padrão
 
   constructor() {
     try {
