@@ -13,9 +13,12 @@ export class Entrada {
       input: process.stdin,
       output: process.stdout,
     });
+
+    //Instanciando a classe Moeda no atributo moeda
     this.moeda = new Moeda();
   }
 
+  //Função que obtem uma entrada do terminal
   receberEntrada(mensagem: string): Promise<string> {
     return new Promise((resolve) => {
       this.entrada.question(mensagem, (resposta) => {
@@ -24,10 +27,12 @@ export class Entrada {
     });
   }
 
+  //Função que fecha a interação com o terminal
   fecharEntrada(): void {
     this.entrada.close();
   }
 
+  //Função que valida se uma entrada de moeda é válida
   validaEntradaMoeda(moeda: string) {
     if (moeda === "") return "Campo vazio!";
     if (moeda.length < 3) return "Campo incorreto! < 3 caracteres!";
@@ -36,114 +41,40 @@ export class Entrada {
     return true;
   }
 
+  //Função que valida se uma entrada de valor é valida
   validaEntradaValor(moeda: string) {
     if (isNaN(parseFloat(moeda))) return "Não foi inserido um valor!";
-
     if (parseFloat(moeda) < 0) return "Valor inválido! < 0!";
 
     return true;
   }
 
-  imprimeConversao(resposta: ConversaoMoeda) {
+  //Função privada que imprime os dados após a conversão
+  private imprimeConversao(resposta: ConversaoMoeda) {
     console.log(
-      `${resposta.query.from} ${resposta.query.amount.toFixed(2)} => ${
+      `\n${resposta.query.from} ${resposta.query.amount.toFixed(2)} => ${
         resposta.query.to
       } ${resposta.result.toFixed(2)}`
     );
-    console.log(`Taxa: ${resposta.info.rate.toFixed(6)}`);
+    console.log(`Taxa: ${resposta.info.rate.toFixed(6)}\n`);
   }
 
-  async converteMoeda(origem: string, destino: string, moeda: string) {
-    const nvMoeda: number = Number(moeda);
-    this.moeda
-      .converteMoeda(origem, destino, nvMoeda)
+  //Função que chama o atributo moeda e solicita a conversão
+  async converteMoeda(
+    origem: string,
+    destino: string,
+    moeda: string
+  ): Promise<any> {
+    await this.moeda
+      .converteMoeda(origem.toUpperCase(), destino.toUpperCase(), Number(moeda))
       .then((resposta) => {
-        console.log(resposta);
-        //if (typeof resposta !== "string") {
+        //Se obtiver sucesso ao converter, imprima a resposta e retorne a Promise como resolvida
         this.imprimeConversao(resposta);
-        //} else throw `Erro ao converter: ${resposta}`;
+        return Promise.resolve();
       })
       .catch((e) => {
-        return `Erro ao converter: ${e}`;
+        //Se não obtiver sucesso, retorne a promise como rejeitada junto a mensagem de erro
+        return Promise.reject(e);
       });
   }
-  /*
-  menu(): boolean {
-    //while (true) {
-    let origem: string = this.receberEntrada("MOEDA ORIGEM: ");
-    let vrf: any = this.validaEntradaMoeda(origem);
-
-    //Validando entrada
-    while (vrf !== true) {
-      //Se o usuário não inserir uma string em "moeda origem", encerre o programa
-      if (vrf === "Campo vazio") return false;
-
-      origem = this.receberEntrada(`${vrf} MOEDA ORIGEM: `);
-      vrf = this.validaEntradaMoeda(origem);
-    }
-
-    let destino: string = this.receberEntrada("MOEDA DESTINO: ");
-    vrf = this.validaEntradaMoeda(destino);
-
-    //Validando entrada
-    while (vrf !== true) {
-      destino = this.receberEntrada(`${vrf} MOEDA DESTINO: `);
-      vrf = this.validaEntradaMoeda(destino);
-    }
-
-    let valor: string = this.receberEntrada("VALOR: ");
-    vrf = this.validaEntradaValor(valor);
-
-    //Validando entrada
-    while (vrf !== true) {
-      valor = this.receberEntrada(`${vrf} VALOR: `);
-      vrf = this.validaEntradaValor(valor);
-    }
-
-    //Chamar função que obtenha a conversão dos valores!
-    this.converteMoeda(origem, destino, valor);
-
-    return true;
-    // }
-  }
-*/
-  /*
-  async menu2(): Promise<boolean> {
-    //while (true) {
-    let origem: string = await this.receberEntrada("MOEDA ORIGEM: ");
-    let vrf: any = this.validaEntradaMoeda(origem);
-
-    //Validando entrada
-    while (vrf !== true) {
-      //Se o usuário não inserir uma string em "moeda origem", encerre o programa
-      if (vrf === "Campo vazio") return false;
-
-      origem = await this.receberEntrada(`${vrf} MOEDA ORIGEM: `);
-      vrf = this.validaEntradaMoeda(origem);
-    }
-    console.log("Consegui " + origem);
-    let destino: Promise<string> = this.receberEntrada("MOEDA DESTINO: ");
-    vrf = this.validaEntradaMoedaP(destino);
-
-    //Validando entrada
-    while (vrf !== true) {
-      destino = this.receberEntrada(`${vrf} MOEDA DESTINO: `);
-      vrf = this.validaEntradaMoedaP(destino);
-    }
-
-    let valor: Promise<string> = this.receberEntrada("VALOR: ");
-    vrf = this.validaEntradaValorP(valor);
-
-    //Validando entrada
-    while (vrf !== true) {
-      valor = this.receberEntrada(`${vrf} VALOR: `);
-      vrf = this.validaEntradaValorP(valor);
-    }
-
-    //Chamar função que obtenha a conversão dos valores!
-    //this.converteMoeda(origem, destino, valor);
-
-    return true;
-    // }
-  }*/
 }

@@ -2,7 +2,13 @@
 import { Entrada } from "./Entrada.js";
 
 //Instanciando classe Entrada
-const entrada = new Entrada();
+let entrada = null;
+try {
+  entrada = new Entrada();
+} catch (e) {
+  console.error(e);
+  process.exit(1);
+}
 
 //Declarando variável booleana que controlará a execução do menu
 let menu: boolean = true;
@@ -57,17 +63,10 @@ while (menu) {
     vrf = entrada.validaEntradaValor(valor);
   }
 
-  //try {
   //Solicitando a conversão
   await entrada.converteMoeda(moedaOrigem, moedaDestino, valor).catch((e) => {
-    console.error(e);
-    menu = false;
+    console.error(`\n${e}\n`);
   });
-  /*} catch (e) {
-    //Caso gere uma exceção, apresente-a e saia do menu
-    console.error(e);
-    menu = false;
-  }*/
 }
 
 //Fechando interação com o terminal

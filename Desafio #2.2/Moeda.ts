@@ -8,9 +8,12 @@ export class Moeda {
 
   constructor() {
     try {
+      //Chamando a função que preenche a lista de moedas
       const listaPreenchida: Promise<boolean> = this.preencheListaMoedas();
 
+      //Validando o retorno da lista preenchida
       listaPreenchida.then((retorno) => {
+        //Se ocorrer um erro, gere um erro
         if (retorno === false)
           throw Error(
             "Não foi possível obter a lista de tipos de moedas, por favor, tente novamente depois!"
@@ -18,6 +21,7 @@ export class Moeda {
       });
     } catch (e) {
       throw Error(
+        //Se ocorrer um erro, gere um erro
         "Não foi possível obter a lista de tipos de moedas, por favor, tente novamente depois!"
       );
     }
@@ -30,11 +34,14 @@ export class Moeda {
         "https://api.exchangerate.host/symbols"
       );
 
-      if (data.success === true) {
-        this.listaMoedas = data;
-      } else return Promise.resolve(false);
+      //Se não houver sucesso, retorne uma promise como falso.
+      if (data.success !== true) return Promise.reject(false);
+
+      //Se houver sucesso na obtenção da base de simbolos, atribua-os ao atributo listaMoedas e retorne a promise como verdadeira
+      this.listaMoedas = data;
       return Promise.resolve(true);
     } catch (e) {
+      //Se ocorrer erros ao obter a base de simbolos,gere uma exceção
       throw `Erro ao preencher lista! ${e}`;
     }
   }
@@ -54,26 +61,37 @@ export class Moeda {
   }
 
   //Função que faz a conversão de um tipo de moeda a outro
-  async converteMoeda(origem: string, destino: string, valor: number) {
+  async converteMoeda(
+    origem: string,
+    destino: string,
+    valor: number
+  ): Promise<any> {
     //Validando se as 2 moedas são iguais
     if (origem === destino)
-      throw "As moedas não podem ser iguais (origem = destino)!";
+      return "Erro ao converter: As moedas não podem ser iguais (origem = destino)!";
 
     //Validando se alguma das moedas inseridas existe
     if (this.validaExisteMoeda(origem) === false)
-      throw `Moeda de origem (${origem}) não existente!`;
+      throw `Erro ao converter: Moeda de origem (${origem}) não existente!`;
 
     if (this.validaExisteMoeda(destino) === false)
-      throw `Moeda de origem (${destino}) não existente!`;
+      throw `Erro ao converter: Moeda de destino (${destino}) não existente!`;
 
+    //Solicitando a conversão para a api
     try {
       const { data } = await axios.get<ConversaoMoeda>(
         `https://api.exchangerate.host/convert`,
         { params: { from: origem, to: destino, amount: valor } }
       );
+      //Se não houver sucesso na resposta da API, gere um erro.
+      if (data.success !== true)
+        throw `Erro na comunicação com a API! Não foi possível obter a conversão via API!`;
+
+      //Se houver sucesso, retorne-a
       return data;
     } catch (e) {
-      throw `Erro ao converter moedas! ${e}`;
+      //Se ocorrer um erro, gere um erro.
+      throw `Erro na comunicação com a API! ${e}`;
     }
   }
 }
