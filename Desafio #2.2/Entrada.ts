@@ -33,7 +33,7 @@ export class Entrada {
   }
 
   //Função que valida se uma entrada de moeda é válida
-  validaEntradaMoeda(moeda: string) {
+  validaEntradaMoeda(moeda: string): string | boolean {
     if (moeda === "") return "Campo vazio!";
     if (moeda.length < 3) return "Campo incorreto! < 3 caracteres!";
     if (moeda.length > 3) return "Campo incorreto! > 3 caracteres!";
@@ -42,15 +42,15 @@ export class Entrada {
   }
 
   //Função que valida se uma entrada de valor é valida
-  validaEntradaValor(moeda: string) {
+  validaEntradaValor(moeda: string): string | boolean {
     if (isNaN(parseFloat(moeda))) return "Não foi inserido um valor!";
-    if (parseFloat(moeda) < 0) return "Valor inválido! < 0!";
+    if (parseFloat(moeda) <= 0) return "Valor inválido! <= 0!";
 
     return true;
   }
 
   //Função privada que imprime os dados após a conversão
-  private imprimeConversao(resposta: ConversaoMoeda) {
+  private imprimeConversao(resposta: ConversaoMoeda): void {
     console.log(
       `\n${resposta.query.from} ${resposta.query.amount.toFixed(2)} => ${
         resposta.query.to
