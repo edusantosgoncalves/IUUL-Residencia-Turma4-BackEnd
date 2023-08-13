@@ -68,7 +68,7 @@ export class Moeda {
   ): Promise<any> {
     //Validando se as 2 moedas são iguais
     if (origem === destino)
-      return "Erro ao converter: As moedas não podem ser iguais (origem = destino)!";
+      throw "Erro ao converter: As moedas não podem ser iguais (origem = destino)!";
 
     //Validando se alguma das moedas inseridas existe
     if (this.validaExisteMoeda(origem) === false)
