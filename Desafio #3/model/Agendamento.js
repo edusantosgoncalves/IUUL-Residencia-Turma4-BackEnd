@@ -15,7 +15,7 @@ const Agendamento = sq.define(
       autoIncrement: true,
     },
     data: {
-      type: Sequelize.VIRTUAL,
+      type: DataTypes.VIRTUAL,
       set(value) {
         //Validando se a string está no formato correto
         const regexData =
@@ -23,8 +23,9 @@ const Agendamento = sq.define(
 
         if (!regexData.test(value))
           throw {
-            name: "SequelizeValidationError",
-            message: "Data no formato incorreto!",
+            campo: "data",
+            tipo: 2,
+            msg: "Data no formato incorreto!",
           };
 
         //Obtendo dados de data da string recebida
@@ -54,16 +55,16 @@ const Agendamento = sq.define(
         const regexHora = /^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$/;
         if (!regexHora.test(value)) {
           throw {
-            name: "SequelizeValidationError",
-            message: "Hora inicial no formato incorreto!",
+            campo: "inicio",
+            tipo: 2,
+            msg: "Hora inicial no formato incorreto!",
           };
         }
 
         //Definindo variável para inserir ao atributo
-        const inicio = this.get("data");
+        const inicio = new Date(this.get("data").toString());
         inicio.setHours(Number(value.substr(0, 2)));
         inicio.setMinutes(Number(value.substr(2)));
-        inicio.setSeconds(0);
         this.setDataValue("inicio", inicio);
       },
     },
@@ -89,11 +90,11 @@ const Agendamento = sq.define(
             throw "Intervalo não permitido!";
 
           //Definindo limites de horário
-          const limiteIni = this.get("data");
+          const limiteIni = new Date(this.get("data").toString());
           limiteIni.setHours(8);
           limiteIni.setMinutes(0);
 
-          const limiteFim = this.get("data");
+          const limiteFim = new Date(this.get("data").toString());
           limiteFim.setHours(19);
           limiteFim.setMinutes(0);
 
@@ -118,18 +119,22 @@ const Agendamento = sq.define(
         const regexHora = /^(0[0-9]|1[0-9]|2[0-3])[0-5][0-9]$/;
         if (!regexHora.test(value)) {
           throw {
-            name: "SequelizeValidationError",
-            message: "Hora final no formato incorreto!",
+            campo: "fim",
+            tipo: 2,
+            msg: "Hora final no formato incorreto!",
           };
         }
 
         //Definindo variável para inserir ao atributo
-        const fim = this.get("data");
+        const fim = new Date(this.get("data").toString());
         fim.setHours(Number(value.substr(0, 2)));
         fim.setMinutes(Number(value.substr(2)));
-        fim.setSeconds(0);
         this.setDataValue("fim", fim);
       },
+    },
+    id_paciente: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   { schema: "desafio3", freezeTableName: true, tableName: "agendamento" }

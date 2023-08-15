@@ -4,7 +4,7 @@ import Sequelize from "sequelize";
 //Instanciando o dotenv para trabalhar com as variáveis .env
 import "dotenv/config";
 
-export const sq = new Sequelize({
+const sq = new Sequelize({
   dialect: process.env.SEQ_DIALECT,
   host: process.env.SEQ_SERVER,
   port: process.env.SEQ_PORT,
@@ -13,3 +13,7 @@ export const sq = new Sequelize({
   database: process.env.SEQ_DB,
   schema: process.env.SEQ_DB_SCH_D3,
 });
+
+//sq.options.logging = false;
+
+export { sq };
