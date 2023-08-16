@@ -12,6 +12,7 @@ const sq = new Sequelize({
   password: process.env.SEQ_USER_PWD,
   database: process.env.SEQ_DB,
   schema: process.env.SEQ_DB_SCH_D3,
+  timezone: "-03:00",
 });
 
 //sq.options.logging = false;
